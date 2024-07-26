@@ -16,8 +16,30 @@ const high_implants = {
     20509: 'High-grade Amulet Omega'
 };
 
+const misc_stuff = {
+    3482: 'Inherent Implants \'Noble\' Hull Upgrades HG-1006',
+    83468: 'Blood Raider NET Resonator'
+};
+
 load_data(mid_implants, '#mid_grades_price_table', 22124);
 load_data(high_implants, '#high_grades_price_table', 20509);
+
+$("#misc_price_table").find('tbody').empty();
+$.get("https://market.fuzzwork.co.uk/aggregates/?station=60003760&types=" + Object.keys(misc_stuff).join(","), function (data, status) {
+    for (let k of Object.keys(misc_stuff)) {
+        $("#misc_price_table").find('tbody').append(
+            $('<tr>')
+                .append($('<td>').addClass('text-center').append($('<img>', {
+                    id: 'icon' + k,
+                    src: 'https://images.evetech.net/types/' + k + '/icon?size=32'
+                })))
+                .append($('<td>').append(misc_stuff[k]))
+                .append($('<td>').append(parseFloat(data[k]['sell']['min']).toLocaleString()))
+                .append($('<td>').append(parseFloat(data[k]['buy']['max']).toLocaleString()))
+                .append($('<td>').append(((parseFloat(data[k]['sell']['min']) + parseFloat(data[k]['buy']['max'])) / 2).toLocaleString()))
+        );
+    }
+});
 
 function load_data(implants, table_id, omega_id) {
     $(table_id).find('tbody').empty();
